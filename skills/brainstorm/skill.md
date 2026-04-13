@@ -1,141 +1,141 @@
 ---
 name: brainstorm
-description: "Beyin fırtınası başlatma ve tamamlama. start = yeni brainstorm başlat, done = aktif brainstorm'u tamamla ve döküman zincirine işle. 3 kapsam: proje (varsayılan), --global, --team."
-argument-hint: "<start|done> [--global|--team] [ilk mesaj]"
+description: "Start and complete brainstorming sessions. start = begin a new brainstorm, done = complete the active brainstorm and propagate to the document chain. 3 scopes: project (default), --global, --team."
+argument-hint: "<start|done> [--global|--team] [initial message]"
 ---
 
 # /brainstorm Skill
 
-## Parametre Ayrıştırma
+## Parameter Parsing
 
-İlk kelime modu belirler: `start` veya `done`. Geri kalan metin (varsa) kullanıcının ilk mesajıdır.
+The first word determines the mode: `start` or `done`. The remaining text (if any) is the user's initial message.
 
-## Üç Kapsam
+## Three Scopes
 
-| Flag | Hedef Dizin | Ne Zaman |
+| Flag | Target Directory | When |
 |------|------------|----------|
-| *(hiçbiri)* | `.claude/brain-storms/` | Bu projeye özel konular (varsayılan) |
-| `--global` | `~/.claude/brain-storms/` | Projeler arası, kişisel konular |
-| `--team` | `~/agent-teams/{team}/brain-storms/` | Team repo'suyla ilgili konular (agent kuralı, team stratejisi) |
+| *(none)* | `.claude/brain-storms/` | Project-specific topics (default) |
+| `--global` | `~/.claude/brain-storms/` | Cross-project, personal topics |
+| `--team` | `~/agent-teams/{team}/brain-storms/` | Topics related to the team repo (agent rules, team strategy) |
 
-**`--team` aktif team tespiti:**
-- `~/.claude/agents/` altındaki symlink'lerin `readlink` sonucundan `~/agent-teams/{team-name}/` çıkarılır
-- Tek team varsa otomatik kullanılır
-- Birden fazla team varsa AskUserQuestion ile sorulur
-- Hiç team yoksa hata: "Kurulu team bulunamadı. Önce /team install çalıştırın."
+**`--team` active team detection:**
+- The `readlink` result of symlinks under `~/.claude/agents/` is used to extract `~/agent-teams/{team-name}/`
+- If there's a single team, it's used automatically
+- If there are multiple teams, the user is asked via AskUserQuestion
+- If no team is found, error: "No installed team found. Run /team install first."
 
 ---
 
-## `start` Modu
+## `start` Mode
 
-Kullanıcı `/brainstorm start ...` dediğinde:
+When the user says `/brainstorm start ...`:
 
-### 1. Konuyu Anla
-Kullanıcının mesajından konuyu çıkar. Konu başlığını kullanıcı vermez — sen mesajdan anlarsın ve uygun bir `kebab-case` dosya ismi belirlersin.
+### 1. Understand the Topic
+Extract the topic from the user's message. The user does not provide a topic title -- you infer it from the message and determine an appropriate `kebab-case` filename.
 
-### 2. Kapsam Belirle
-- `--global` varsa → `base_dir = ~/.claude/`
-- `--team` varsa → `base_dir = ~/agent-teams/{team-name}/` (aktif team tespit et)
-- İkisi de yoksa → `base_dir = .claude/` (proje kökü)
+### 2. Determine Scope
+- If `--global` is present -> `base_dir = ~/.claude/`
+- If `--team` is present -> `base_dir = ~/agent-teams/{team-name}/` (detect active team)
+- If neither -> `base_dir = .claude/` (project root)
 
-### 3. Dizini Oluştur (yoksa)
-`{base_dir}/brain-storms/` dizini yoksa oluştur.
+### 3. Create Directory (if it doesn't exist)
+Create the `{base_dir}/brain-storms/` directory if it doesn't exist.
 
-### 4. Dosya Oluştur
-`{base_dir}/brain-storms/{isim}.md` dosyasını oluştur:
+### 4. Create File
+Create the `{base_dir}/brain-storms/{name}.md` file:
 
 ```markdown
 ---
 status: active
 scope: {project|global|team}
-team: {team-name veya null}
-date: {bugünün tarihi}
+team: {team-name or null}
+date: {today's date}
 participants: Mesut, Claude
 ---
 
-# {Konu Başlığı}
+# {Topic Title}
 
-## Bağlam
+## Context
 
-{Kullanıcının ilk mesajından anlaşılan bağlam ve motivasyon}
+{Context and motivation understood from the user's initial message}
 
-## Tartışma
+## Discussion
 
-### {Tarih} — Başlangıç
+### {Date} — Start
 
-{İlk mesajın özeti ve varsa ilk fikirler}
+{Summary of the initial message and any first ideas}
 
-## Açık Konular
+## Open Items
 
-- {İlk mesajdan çıkan sorular veya tartışılması gereken noktalar}
+- {Questions or points to discuss extracted from the initial message}
 ```
 
-### 5. Yanıt Ver
-Kullanıcıya brainstorm'un başladığını, dosya ismini ve kapsamını bildir ve konuya gir.
+### 5. Respond
+Inform the user that the brainstorm has started, including the filename and scope, then dive into the topic.
 
-### 6. Sonraki Mesajlarda
-Her mesaj döngüsünde brainstorm dosyasını güncelle:
-- Yeni fikirler, kararlar, reddedilen alternatifler ve nedenleri ekle
-- Kullanıcının önemli ifadelerini aynen koru (tırnak içinde)
-- Kronolojik sırayı koru — tartışma bölümüne yeni alt başlıklar ekle
-- Açık konular listesini güncelle (çözülenler kaldırılır, yeniler eklenir)
+### 6. On Subsequent Messages
+Update the brainstorm file on every message cycle:
+- Add new ideas, decisions, rejected alternatives and their reasons
+- Preserve the user's important statements verbatim (in quotes)
+- Maintain chronological order -- add new subheadings to the discussion section
+- Update the open items list (resolved ones are removed, new ones are added)
 
-**ÖNEMLİ:** Dosya o kadar detaylı olmalı ki, yeni bir context'te okuyan Claude sanki o konuşmada oradaymış gibi devam edebilsin.
+**IMPORTANT:** The file must be detailed enough that a Claude reading it in a new context can continue as if it had been present in the conversation.
 
 ---
 
-## `done` Modu
+## `done` Mode
 
-Kullanıcı `/brainstorm done` dediğinde:
+When the user says `/brainstorm done`:
 
-### 1. Aktif Brainstorm'u Bul
-**Üç konumda da** ara:
-- `.claude/brain-storms/` (proje)
+### 1. Find Active Brainstorm
+Search **in all three locations**:
+- `.claude/brain-storms/` (project)
 - `~/.claude/brain-storms/` (global)
-- `~/agent-teams/*/brain-storms/` (tüm team'ler)
+- `~/agent-teams/*/brain-storms/` (all teams)
 
-`status: active` olan dosyaları bul. Birden fazla varsa kullanıcıya listele (hangi scope'ta olduğunu da göster) ve hangisini tamamlamak istediğini sor.
+Find files with `status: active`. If there are multiple, list them for the user (showing which scope each is in) and ask which one to complete.
 
-### 2. Brainstorm Dosyasını Tamamla
-- `status: active` → `status: completed` yap
-- Tartışma bölümünün sonuna son notları ekle
-- "Açık Konular" bölümünü güncelle (çözülmemiş olanlar kalır)
-- "Kesinleşen Kararlar" bölümü ekle — tüm tartışmadan çıkan net kararların özeti
+### 2. Complete the Brainstorm File
+- Change `status: active` to `status: completed`
+- Add final notes at the end of the discussion section
+- Update the "Open Items" section (unresolved ones remain)
+- Add a "Final Decisions" section -- a summary of all definitive decisions from the entire discussion
 
-### 3. Docs Dosyası Oluştur/Güncelle
-Brainstorm'un scope'una göre docs dosyasının konumunu belirle:
-- **Proje brainstorm** → `.claude/docs/` altına yaz
-- **Global brainstorm** → `~/.claude/docs/` altına yaz
-- **Team brainstorm** → `~/agent-teams/{team}/docs/` altına yaz
+### 3. Create/Update Docs File
+Determine the docs file location based on the brainstorm's scope:
+- **Project brainstorm** -> write under `.claude/docs/`
+- **Global brainstorm** -> write under `~/.claude/docs/`
+- **Team brainstorm** -> write under `~/agent-teams/{team}/docs/`
 
-Dosyanın başında brainstorm'a referans ver.
+Reference the brainstorm at the top of the file.
 
-### 4. CLAUDE.md / README Güncelle
-- **Proje brainstorm** → Proje kökündeki `CLAUDE.md` güncelle
-- **Global brainstorm** → `~/.claude/CLAUDE.md` güncelle
-- **Team brainstorm** → `~/agent-teams/{team}/README.md` güncelle
+### 4. Update CLAUDE.md / README
+- **Project brainstorm** -> update `CLAUDE.md` at the project root
+- **Global brainstorm** -> update `~/.claude/CLAUDE.md`
+- **Team brainstorm** -> update `~/agent-teams/{team}/README.md`
 
-### 5. Team Brainstorm İse Git Push
-Team scope'unda tamamlanan brainstorm sonrası:
+### 5. Git Push for Team Brainstorms
+After completing a brainstorm in team scope:
 ```bash
 cd ~/agent-teams/{team-name}
 git add -A
-git commit -m "brainstorm: {konu özeti}"
+git commit -m "brainstorm: {topic summary}"
 git push
 ```
 
-### 6. Yanıt Ver
-Kullanıcıya brainstorm'un tamamlandığını, oluşturulan/güncellenen dosyaları bildir.
+### 6. Respond
+Inform the user that the brainstorm is complete and list the created/updated files.
 
 ---
 
-## Önemli Kurallar
+## Important Rules
 
-1. **Birden fazla aktif brainstorm olabilir.** Her biri kendi dosyasında bağımsız yaşar. Farklı scope'larda aynı anda aktif olabilir.
-2. **Context kırılmasına dayanıklılık.** Brainstorm dosyası persistent state'tir. Yeni context'te rule sayesinde aktif brainstorm algılanır ve dosya okunarak devam edilir.
-3. **Dosya ismi kullanıcıdan istenmez.** Sen mesajdan anlarsın ve uygun kebab-case isim verirsin.
-4. **Brainstorm dosyaları asla silinmez.** Tarihsel kayıt olarak kalır.
-5. **Her brainstorm tek konuya odaklanır.** Farklı konular farklı dosyalarda.
-6. **Aktif brainstorm araması üç konumda da yapılır.** `done` modunda proje + global + tüm team dizinleri taranır.
-7. **Scope frontmatter'da belirtilir.** `scope: project|global|team`, `team: {name}` — done modunda doğru hedefi belirler.
-8. **Team brainstorm'da otomatik git push.** Done sonrası commit + push yapılır.
+1. **Multiple active brainstorms can exist.** Each lives independently in its own file. They can be active simultaneously across different scopes.
+2. **Resilience to context breaks.** The brainstorm file is persistent state. In a new context, the rule detects active brainstorms and continues by reading the file.
+3. **Filename is not requested from the user.** You infer it from the message and assign an appropriate kebab-case name.
+4. **Brainstorm files are never deleted.** They remain as historical records.
+5. **Each brainstorm focuses on a single topic.** Different topics go in different files.
+6. **Active brainstorm search covers all three locations.** In `done` mode, project + global + all team directories are scanned.
+7. **Scope is specified in frontmatter.** `scope: project|global|team`, `team: {name}` -- determines the correct target in done mode.
+8. **Automatic git push for team brainstorms.** Commit + push is performed after done.

@@ -1,59 +1,59 @@
-# Brainstorm Kuralları
+# Brainstorm Rules
 
-## Aktif Brainstorm Kontrolü
+## Active Brainstorm Check
 
-Her konuşma başlangıcında `.claude/brain-storms/` dizininde `status: active` olan dosya var mı kontrol et. Varsa:
+At the start of every conversation, check if there is a file with `status: active` in the `.claude/brain-storms/` directory. If so:
 
-1. Dosyayı oku ve bağlamı anla
-2. Kullanıcıya aktif brainstorm olduğunu bildir
-3. Her mesaj döngüsünde dosyayı güncelle
+1. Read the file and understand the context
+2. Inform the user that there is an active brainstorm
+3. Update the file on every message cycle
 
-## Canlı Tutma (Aktif Brainstorm Varken)
+## Keeping It Alive (When an Active Brainstorm Exists)
 
-Her mesaj döngüsünde:
-- **Mesaj alındığında:** Brainstorm dosyasını oku (context hatırlamak için)
-- **Yanıt verdikten sonra:** Yeni kararları, reddedilen fikirleri, nedenleri dosyaya işle
+On every message cycle:
+- **When a message is received:** Read the brainstorm file (to recall context)
+- **After responding:** Write new decisions, rejected ideas, and their reasons to the file
 
-### Dosyada ne olmalı:
-- Sadece "X kararı alındı" DEĞİL → "X önerildi, Y nedeniyle reddedildi, Z nedeniyle X'in modifiye hali kabul edildi"
-- Kullanıcının exact ifadeleri (önemli yerlerde) — ruh orada
-- Açık kalan sorular ve sonraki adımlar
-- Kronolojik akış — hangi fikir hangisinden sonra geldi
+### What should be in the file:
+- NOT just "Decision X was made" -> "X was proposed, rejected due to Y, a modified version of X was accepted due to Z"
+- The user's exact statements (at important points) -- the spirit lives there
+- Open questions and next steps
+- Chronological flow -- which idea came after which
 
-### Amaç:
-Brainstorm dosyası, yeni bir context açıldığında okuyan Claude'un sanki o konuşmada oradaymış gibi devam edebileceği kadar detaylı ve ruhlu olmalı.
+### Purpose:
+The brainstorm file should be detailed and spirited enough that a Claude reading it in a new context can continue as if it had been present in that conversation.
 
-## Döküman Zinciri
+## Document Chain
 
-Her tartışma ve karar üç katmanlı zinciri izler:
+Every discussion and decision follows a three-layer chain:
 
 ```
-brain-storms/ (süreç) → docs/ (sonuç) → CLAUDE.md (özet)
-                     ↘
-                       backlog.md (sonraya bırakılanlar)
+brain-storms/ (process) -> docs/ (outcome) -> CLAUDE.md (summary)
+                     \
+                       backlog.md (deferred items)
 ```
 
-- Brainstorm olmadan karar alınmaz
-- Brainstorm dosyaları silinmez (tarihsel kayıt)
-- Kararlar değişirse yeni brainstorm açılır, eskisine "superseded by X" notu eklenir
+- No decision is made without a brainstorm
+- Brainstorm files are never deleted (historical record)
+- If decisions change, a new brainstorm is opened and a "superseded by X" note is added to the old one
 
-## Backlog Disiplini
+## Backlog Discipline
 
-Brainstorm sırasında "şu an yapmıyoruz, sonra" denilen her madde **`.claude/backlog.md`**'ye yansıtılmalı. Bu, scope creep'i önlemek için kritik — şimdi yapmadığımızı kayda alıyoruz ki ileride feature ihtiyacı doğduğunda hatırlayalım.
+Every item marked as "not doing now, later" during a brainstorm must be reflected in **`.claude/backlog.md`**. This is critical for preventing scope creep -- we record what we're not doing now so we remember when a feature need arises in the future.
 
-### Ne zaman backlog'a eklenir:
-- Brainstorm sırasında bir alt-konu için "bu prematüre, sonraya bırakalım" denildiğinde → **anında** backlog'a yaz, "sonra" deme
-- Bir karar maddesi explicitly "bu adıma dahil değil" olarak işaretlendiğinde
-- Tier 3 olarak işaretlenen ve tek bir cümle olmayan, kalıcı kayıt gerektiren konular
-- Geliştirme sırasında "bunu sonra yaparız" diye not düşülen her şey
+### When to add to the backlog:
+- When a sub-topic is deemed "premature, let's defer" during a brainstorm -> write to the backlog **immediately**, don't say "later"
+- When a decision item is explicitly marked as "not included in this step"
+- Topics marked as Tier 3 that are more than a single sentence and require a permanent record
+- Everything noted as "we'll do this later" during development
 
 ### Format:
-- **Prepend** (yeni en üstte) — `.claude/backlog.md` dosyasının başına eklenir, eskiler aşağıda kalır
-- Her madde için: tarih + kategori başlık + bağlam linki + detaylı konu açıklaması + "ne zaman gündeme gelir" notu + ilgili kaynaklar
-- Dosyanın başındaki şablonu izle
+- **Prepend** (newest on top) -- added to the beginning of the `.claude/backlog.md` file, older items stay below
+- For each item: date + category heading + context link + detailed topic description + "when does this come up" note + related resources
+- Follow the template at the top of the file
 
-### Brainstorm done sırasında zorunlu kontrol:
-`/brainstorm done` çağrıldığında, brainstorm dosyasındaki tüm "sonraya bırakılan" notları tarayıp **her birinin backlog'da karşılığı olduğundan emin ol**. Eksik varsa kullanıcıya sor ve ekle. Bu, brainstorm'u kapatmadan önce bir checklist adımı.
+### Mandatory check during brainstorm done:
+When `/brainstorm done` is called, scan all "deferred" notes in the brainstorm file and **ensure each one has a corresponding entry in the backlog**. If any are missing, ask the user and add them. This is a checklist step before closing the brainstorm.
 
-### Backlog'dan çıkarma:
-Bir madde implement edildiğinde backlog'dan **silinir** (done diye işaretlenip bırakılmaz). Çünkü artık aktif altyapının parçası, ilgili docs/CLAUDE.md güncellenir.
+### Removing from the backlog:
+When an item is implemented, it is **deleted** from the backlog (not marked as done and left). Because it is now part of the active infrastructure, the relevant docs/CLAUDE.md is updated instead.
