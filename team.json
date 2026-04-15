@@ -1,0 +1,5 @@
+{
+  "name": "brainstorm-skill",
+  "version": "1.0.0",
+  "description": "Structured brainstorming with persistent state. 3 scopes: project, global, team."
+}
