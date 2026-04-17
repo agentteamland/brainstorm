@@ -5,10 +5,10 @@ A Claude Code skill for structured brainstorming sessions with persistent state.
 ## Installation
 
 ```bash
-/team install https://github.com/mkurak/agent-workshop-brainstorm-skill.git
+/team install https://github.com/agentteamland/brainstorm.git
 ```
 
-> Requires [Agent Team Manager](https://github.com/mkurak/agent-workshop-agent-team-manager-skill) to be installed first.
+> Requires [Agent Team Manager](https://github.com/agentteamland/team-manager) to be installed first.
 
 ## Usage
 

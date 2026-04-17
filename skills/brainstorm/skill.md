@@ -16,10 +16,10 @@ The first word determines the mode: `start` or `done`. The remaining text (if an
 |------|------------|----------|
 | *(none)* | `.claude/brain-storms/` | Project-specific topics (default) |
 | `--global` | `~/.claude/brain-storms/` | Cross-project, personal topics |
-| `--team` | `~/.claude/repos/mkurak/{team}/brain-storms/` | Topics related to the team repo (agent rules, team strategy) |
+| `--team` | `~/.claude/repos/agentteamland/{team}/brain-storms/` | Topics related to the team repo (agent rules, team strategy) |
 
 **`--team` active team detection:**
-- The `readlink` result of symlinks under `~/.claude/agents/` is used to extract `~/.claude/repos/mkurak/{team-name}/`
+- The `readlink` result of symlinks under `~/.claude/agents/` is used to extract `~/.claude/repos/agentteamland/{team-name}/`
 - If there's a single team, it's used automatically
 - If there are multiple teams, the user is asked via AskUserQuestion
 - If no team is found, error: "No installed team found. Run /team install first."
@@ -35,7 +35,7 @@ Extract the topic from the user's message. The user does not provide a topic tit
 
 ### 2. Determine Scope
 - If `--global` is present -> `base_dir = ~/.claude/`
-- If `--team` is present -> `base_dir = ~/.claude/repos/mkurak/{team-name}/` (detect active team)
+- If `--team` is present -> `base_dir = ~/.claude/repos/agentteamland/{team-name}/` (detect active team)
 - If neither -> `base_dir = .claude/` (project root)
 
 ### 3. Create Directory (if it doesn't exist)
@@ -92,7 +92,7 @@ When the user says `/brainstorm done`:
 Search **in all three locations**:
 - `.claude/brain-storms/` (project)
 - `~/.claude/brain-storms/` (global)
-- `~/.claude/repos/mkurak/*/brain-storms/` (all teams)
+- `~/.claude/repos/agentteamland/*/brain-storms/` (all teams)
 
 Find files with `status: active`. If there are multiple, list them for the user (showing which scope each is in) and ask which one to complete.
 
@@ -106,19 +106,19 @@ Find files with `status: active`. If there are multiple, list them for the user 
 Determine the docs file location based on the brainstorm's scope:
 - **Project brainstorm** -> write under `.claude/docs/`
 - **Global brainstorm** -> write under `~/.claude/docs/`
-- **Team brainstorm** -> write under `~/.claude/repos/mkurak/{team}/docs/`
+- **Team brainstorm** -> write under `~/.claude/repos/agentteamland/{team}/docs/`
 
 Reference the brainstorm at the top of the file.
 
 ### 4. Update CLAUDE.md / README
 - **Project brainstorm** -> update `CLAUDE.md` at the project root
 - **Global brainstorm** -> update `~/.claude/CLAUDE.md`
-- **Team brainstorm** -> update `~/.claude/repos/mkurak/{team}/README.md`
+- **Team brainstorm** -> update `~/.claude/repos/agentteamland/{team}/README.md`
 
 ### 5. Git Push for Team Brainstorms
 After completing a brainstorm in team scope:
 ```bash
-cd ~/.claude/repos/mkurak/{team-name}
+cd ~/.claude/repos/agentteamland/{team-name}
 git add -A
 git commit -m "brainstorm: {topic summary}"
 git push
