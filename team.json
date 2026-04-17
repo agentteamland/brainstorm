@@ -1,5 +1,29 @@
 {
-  "name": "brainstorm-skill",
+  "schemaVersion": 1,
+  "name": "brainstorm",
   "version": "1.0.0",
-  "description": "Structured brainstorming with persistent state. 3 scopes: project, global, team."
+  "description": "Structured brainstorming with persistent state and document chain. 3 scopes: project, global, team.",
+  "author": {
+    "name": "AgentTeamLand",
+    "url": "https://github.com/agentteamland"
+  },
+  "license": "MIT",
+  "keywords": ["brainstorm", "decisions", "planning", "documentation"],
+  "repository": "https://github.com/agentteamland/brainstorm",
+  "homepage": "https://github.com/agentteamland",
+  "agents": [],
+  "skills": [
+    { "name": "brainstorm", "description": "/brainstorm start|done — capture discussions with persistent files, document chain, and backlog discipline" }
+  ],
+  "rules": [
+    { "name": "brainstorm", "description": "Active brainstorm detection + document chain discipline" }
+  ],
+  "extends": null,
+  "excludes": [],
+  "dependencies": {
+    "core": "^1.0.0"
+  },
+  "requires": {
+    "atl": ">=0.1.0"
+  }
 }
