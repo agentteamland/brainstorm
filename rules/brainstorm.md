@@ -2,11 +2,29 @@
 
 ## Active Brainstorm Check
 
-At the start of every conversation, check if there is a file with `status: active` in the `.claude/brain-storms/` directory. If so:
+There are TWO redundant signals for active brainstorms — honor both:
 
-1. Read the file and understand the context
-2. Inform the user that there is an active brainstorm
-3. Update the file on every message cycle
+### Signal 1 — CLAUDE.md / README marker (auto-loaded, hard to miss)
+
+Every active brainstorm pins itself into the scope's `CLAUDE.md` (or team `README.md`) inside an `<!-- brainstorm:active:start --> ... <!-- brainstorm:active:end -->` block at start time, and removes itself at done time. Because `CLAUDE.md` is auto-loaded into every Claude session as project instructions, the active brainstorm appears at the top of context unconditionally — no scanning required.
+
+If you see this block at the start of a session: **read the linked brainstorm file before doing any work** that touches its topic.
+
+### Signal 2 — Directory scan (source of truth)
+
+The marker block is a redundancy mechanism — the directory itself is authoritative. At the start of every conversation, also check for files with `status: active` frontmatter in:
+
+- `.claude/brain-storms/` (current project)
+- `~/.claude/brain-storms/` (global, cross-project)
+- For team-scoped brainstorms: `~/.claude/repos/agentteamland/*/brain-storms/`
+
+If a `status: active` file exists but no marker block does (e.g., the brainstorm was created before this rule existed, or someone hand-edited files), restore the marker via the same format the `start` skill writes — and inform the user that the marker was recovered.
+
+### What to do when an active brainstorm is detected
+
+1. Read the file and understand the full context
+2. Inform the user that there is an active brainstorm and which one
+3. Update the file on every message cycle (see "Keeping It Alive" below)
 
 ## Keeping It Alive (When an Active Brainstorm Exists)
 
