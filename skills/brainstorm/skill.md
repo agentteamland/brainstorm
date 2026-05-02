@@ -50,7 +50,7 @@ status: active
 scope: {project|global|team}
 team: {team-name or null}
 date: {today's date}
-participants: Mesut, Claude
+participants: <user-name>, Claude
 ---
 
 # {Topic Title}
@@ -150,14 +150,21 @@ Two updates happen here:
    - **If the bullet list becomes empty after removal**, remove the entire marker block (including the H2 heading and intro line) so the file does not retain a stale "Active brainstorms" section.
    - **If other bullets remain**, keep the block intact — other brainstorms are still active.
 
-### 5. Git Push for Team Brainstorms
-After completing a brainstorm in team scope:
+### 5. Persisting Team Brainstorms
+After completing a brainstorm in team scope, the brainstorm file lives under the team's local clone at `~/.claude/repos/agentteamland/{team-name}/.claude/brain-storms/`. The `done` flow writes the file there but does NOT push directly to `origin/main` — every public agentteamland repo is branch-protected.
+
+To get the brainstorm into the team's main branch, open a PR (manually or via `/create-pr`):
+
 ```bash
 cd ~/.claude/repos/agentteamland/{team-name}
-git add -A
+git checkout -b brainstorm/{topic}
+git add .claude/brain-storms/{topic}.md
 git commit -m "brainstorm: {topic summary}"
-git push
+git push -u origin brainstorm/{topic}
+gh pr create --fill
 ```
+
+The `/create-pr` skill in `core` automates this if installed.
 
 ### 6. Respond
 Inform the user that the brainstorm is complete and list the created/updated files.
@@ -173,4 +180,8 @@ Inform the user that the brainstorm is complete and list the created/updated fil
 5. **Each brainstorm focuses on a single topic.** Different topics go in different files.
 6. **Active brainstorm search covers all three locations.** In `done` mode, project + global + all team directories are scanned.
 7. **Scope is specified in frontmatter.** `scope: project|global|team`, `team: {name}` -- determines the correct target in done mode.
-8. **Automatic git push for team brainstorms.** Commit + push is performed after done.
+8. **Team brainstorms ship via PR, not direct push.** Every public `agentteamland/{team}` repo is branch-protected; the `done` flow writes the brainstorm file to the team's local clone and instructs the user to open a PR (manually or via `/create-pr`).
+
+## Accumulated Learnings
+
+(Auto-rebuilt by /save-learnings from learnings/*.md frontmatter. Do not edit by hand. Currently empty — populates as the skill is used and edge-case learnings accumulate.)
