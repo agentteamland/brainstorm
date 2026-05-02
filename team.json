@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "brainstorm",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Structured brainstorming with persistent state and document chain. 3 scopes: project, global, team.",
   "author": {
     "name": "AgentTeamLand",
