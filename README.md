@@ -5,10 +5,12 @@ A Claude Code skill for structured brainstorming sessions with persistent state.
 ## Installation
 
 ```bash
-/team install https://github.com/agentteamland/brainstorm.git
+atl install brainstorm
 ```
 
-> Requires [Agent Team Manager](https://github.com/agentteamland/team-manager) to be installed first.
+> Requires the [`atl` CLI](https://github.com/agentteamland/cli) to be installed first.
+
+(The legacy `/team install` invocation was retired in `team-manager@2.0.0` on 2026-05-02; the `/team` skill is now a deprecation stub that points at `atl`.)
 
 ## Usage
 
@@ -27,7 +29,7 @@ A Claude Code skill for structured brainstorming sessions with persistent state.
 
 ### Starting a Brainstorm
 - Creates a `.claude/brain-storms/{topic}.md` file (or `~/.claude/` for global)
-- **Pins the active brainstorm to the scope's `CLAUDE.md`** (or team `README.md`) inside a `<!-- brainstorm:active:start --> ... <!-- brainstorm:active:end -->` marker block — so future Claude sessions see it as part of auto-loaded project instructions and cannot miss it
+- **Pins the active brainstorm to the scope's `CLAUDE.md`** (or team `README.md`) inside a `<!-- brainstorm:active:start --> ... <!-- brainstorm:active:end -->` marker block — so future Claude sessions see it as part of auto-loaded project instructions and cannot miss it. (Shipped in `brainstorm@1.1.0`.)
 - Captures discussion, decisions, rejected alternatives, and reasoning
 - Updates the file after every message exchange
 - Survives context switches — new sessions pick up where you left off
