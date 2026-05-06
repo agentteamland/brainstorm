@@ -14,8 +14,8 @@ The first word determines the mode: `start` or `done`. The remaining text (if an
 
 | Flag | Target Directory | When |
 |------|------------|----------|
-| *(none)* | `.claude/brain-storms/` | Project-specific topics (default) |
-| `--global` | `~/.claude/brain-storms/` | Cross-project, personal topics |
+| *(none)* | `.atl/brain-storms/` | Project-specific topics (default) |
+| `--global` | `~/.atl/brain-storms/` | Cross-project, personal topics |
 | `--team` | `~/.claude/repos/agentteamland/{team}/brain-storms/` | Topics related to the team repo (agent rules, team strategy) |
 
 **`--team` active team detection:**
@@ -94,7 +94,7 @@ These topics have an in-progress brainstorm — read the file before making any 
 **Insertion rules:**
 1. **If the marker block does NOT exist:** insert it near the top of the file, right after the H1 + opening description (before the first H2 heading). For project `CLAUDE.md` this typically means after the intro paragraph; for `~/.claude/CLAUDE.md` it goes right after the title; for team `README.md` it goes right after the badges/intro.
 2. **If the marker block EXISTS:** add a new bullet to the list (preserve existing bullets — multiple active brainstorms can coexist). Do not duplicate a bullet for the same brainstorm.
-3. **Relative path:** Use a path relative to the file you're editing (e.g., `.claude/brain-storms/foo.md` from project `CLAUDE.md`; `brain-storms/foo.md` from `~/.claude/CLAUDE.md`; `brain-storms/foo.md` from team `README.md`).
+3. **Relative path:** Use a path relative to the file you're editing (e.g., `.atl/brain-storms/foo.md` from project `CLAUDE.md`; `brain-storms/foo.md` from `~/.claude/CLAUDE.md`; `brain-storms/foo.md` from team `README.md`).
 4. **One-line summary:** Distill from the brainstorm's H1 title or context — keep under ~80 chars.
 
 ### 6. Respond
@@ -117,8 +117,8 @@ When the user says `/brainstorm done`:
 
 ### 1. Find Active Brainstorm
 Search **in all three locations**:
-- `.claude/brain-storms/` (project)
-- `~/.claude/brain-storms/` (global)
+- `.atl/brain-storms/` (project)
+- `~/.atl/brain-storms/` (global)
 - `~/.claude/repos/agentteamland/*/brain-storms/` (all teams)
 
 Find files with `status: active`. If there are multiple, list them for the user (showing which scope each is in) and ask which one to complete.
@@ -131,8 +131,8 @@ Find files with `status: active`. If there are multiple, list them for the user 
 
 ### 3. Create/Update Docs File
 Determine the docs file location based on the brainstorm's scope:
-- **Project brainstorm** -> write under `.claude/docs/`
-- **Global brainstorm** -> write under `~/.claude/docs/`
+- **Project brainstorm** -> write under `.atl/docs/`
+- **Global brainstorm** -> write under `~/.atl/docs/`
 - **Team brainstorm** -> write under `~/.claude/repos/agentteamland/{team}/docs/`
 
 Reference the brainstorm at the top of the file.
@@ -151,14 +151,14 @@ Two updates happen here:
    - **If other bullets remain**, keep the block intact — other brainstorms are still active.
 
 ### 5. Persisting Team Brainstorms
-After completing a brainstorm in team scope, the brainstorm file lives under the team's local clone at `~/.claude/repos/agentteamland/{team-name}/.claude/brain-storms/`. The `done` flow writes the file there but does NOT push directly to `origin/main` — every public agentteamland repo is branch-protected.
+After completing a brainstorm in team scope, the brainstorm file lives under the team's local clone at `~/.claude/repos/agentteamland/{team-name}/.atl/brain-storms/`. The `done` flow writes the file there but does NOT push directly to `origin/main` — every public agentteamland repo is branch-protected.
 
 To get the brainstorm into the team's main branch, open a PR (manually or via `/create-pr`):
 
 ```bash
 cd ~/.claude/repos/agentteamland/{team-name}
 git checkout -b brainstorm/{topic}
-git add .claude/brain-storms/{topic}.md
+git add .atl/brain-storms/{topic}.md
 git commit -m "brainstorm: {topic summary}"
 git push -u origin brainstorm/{topic}
 gh pr create --fill
