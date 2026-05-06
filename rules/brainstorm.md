@@ -14,8 +14,8 @@ If you see this block at the start of a session: **read the linked brainstorm fi
 
 The marker block is a redundancy mechanism — the directory itself is authoritative. At the start of every conversation, also check for files with `status: active` frontmatter in:
 
-- `.claude/brain-storms/` (current project)
-- `~/.claude/brain-storms/` (global, cross-project)
+- `.atl/brain-storms/` (current project)
+- `~/.atl/brain-storms/` (global, cross-project)
 - For team-scoped brainstorms: `~/.claude/repos/agentteamland/*/brain-storms/`
 
 If a `status: active` file exists but no marker block does (e.g., the brainstorm was created before this rule existed, or someone hand-edited files), restore the marker via the same format the `start` skill writes — and inform the user that the marker was recovered.
@@ -57,7 +57,7 @@ brain-storms/ (process) -> docs/ (outcome) -> CLAUDE.md (summary)
 
 ## Backlog Discipline
 
-Every item marked as "not doing now, later" during a brainstorm must be reflected in **`.claude/backlog.md`**. This is critical for preventing scope creep -- we record what we're not doing now so we remember when a feature need arises in the future.
+Every item marked as "not doing now, later" during a brainstorm must be reflected in **`.atl/backlog.md`**. This is critical for preventing scope creep -- we record what we're not doing now so we remember when a feature need arises in the future.
 
 ### When to add to the backlog:
 - When a sub-topic is deemed "premature, let's defer" during a brainstorm -> write to the backlog **immediately**, don't say "later"
@@ -66,7 +66,7 @@ Every item marked as "not doing now, later" during a brainstorm must be reflecte
 - Everything noted as "we'll do this later" during development
 
 ### Format:
-- **Prepend** (newest on top) -- added to the beginning of the `.claude/backlog.md` file, older items stay below
+- **Prepend** (newest on top) -- added to the beginning of the `.atl/backlog.md` file, older items stay below
 - For each item: date + category heading + context link + detailed topic description + "when does this come up" note + related resources
 - Follow the template at the top of the file
 

@@ -2,9 +2,9 @@
 
 > Structured brainstorming sessions with persistent state. Open a topic, discuss across multiple sessions, finalize decisions into the document chain.
 
-The `/brainstorm` skill creates a persistent file under `.claude/brain-storms/` (or `~/.claude/` for `--global` scope, or the team repo for `--team`), pins it into the scope's `CLAUDE.md` so the next session cannot miss it, and routes settled decisions through `brain-storms/ → docs/ → CLAUDE.md` when you `/brainstorm done`.
+The `/brainstorm` skill creates a persistent file under `.atl/brain-storms/` (or `~/.claude/` for `--global` scope, or the team repo for `--team`), pins it into the scope's `CLAUDE.md` so the next session cannot miss it, and routes settled decisions through `brain-storms/ → docs/ → CLAUDE.md` when you `/brainstorm done`.
 
-Three scopes: project (default), `--global`, `--team`. Active-brainstorm pinning shipped in `brainstorm@1.1.0`. Backlog discipline ensures every "do it later" item lands in `.claude/backlog.md` before a brainstorm closes.
+Three scopes: project (default), `--global`, `--team`. Active-brainstorm pinning shipped in `brainstorm@1.1.0`. Backlog discipline ensures every "do it later" item lands in `.atl/backlog.md` before a brainstorm closes.
 
 ## 📚 Documentation
 
